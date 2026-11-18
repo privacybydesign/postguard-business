@@ -1,10 +1,11 @@
 # Opens and updates the release PR, and creates the GitHub release and tag when
 # that PR is merged.
 #
-# A release created with GITHUB_TOKEN does not start other workflows, so a
-# `release: published` trigger on Delivery would never fire. workflow_dispatch
-# is exempt from that rule: the second job starts Delivery on the new tag,
-# which publishes the image as :<version>.
+# The second job starts Delivery on the new tag, which publishes the image as
+# :<version>. It does so by workflow_dispatch and not by a `release: published`
+# trigger on Delivery, so that it also works when the release was created with
+# GITHUB_TOKEN (no release App secrets): such a release starts no workflows,
+# and workflow_dispatch is exempt from that rule.
 name: Release please
 
 on:
@@ -20,6 +21,13 @@ jobs:
       contents: write
       pull-requests: write
       issues: write
+    # The org's release App opens the release PR and creates the release.
+    # privacybydesign does not let GITHUB_TOKEN open a pull request, and one it
+    # did open would start no workflows. Without these two the shared workflow
+    # falls back to GITHUB_TOKEN.
+    secrets:
+      RELEASE_APP_ID: ${{ secrets.RELEASE_APP_ID }}
+      RELEASE_APP_PRIVATE_KEY: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
 
   publish-release-image:
     name: Start Delivery on the release tag

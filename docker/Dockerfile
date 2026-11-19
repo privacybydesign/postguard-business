@@ -31,6 +31,12 @@ FROM node:24-slim@sha256:dc26ae92c9fb15cf6b1d63e20f0944b2efe0f115b20e00be48fb23f
 # fixable critical, so take the fixes that exist at build time.
 RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends curl \
     && rm -rf /var/lib/apt/lists/*
+# Nothing in this image runs npm: the entrypoint starts `node` directly. The
+# npm the base image ships carries its own copies of undici and
+# brace-expansion, which the image scan fails on and no update here can reach.
+# Drop it, with the npx and corepack launchers that point into it.
+RUN rm -rf /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/corepack \
+           /usr/local/bin/npm /usr/local/bin/npx /usr/local/bin/corepack
 WORKDIR /app
 COPY --from=build /app/build ./build
 COPY --from=build /app/package.json ./

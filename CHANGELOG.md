@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.2](https://github.com/privacybydesign/postguard-business/compare/v1.4.1...v1.4.2) (2026-11-20)
+
+
+### Bug Fixes
+
+* **deps:** clear the fixable high findings in the image scan ([#159](https://github.com/privacybydesign/postguard-business/issues/159)) ([bfd80a1](https://github.com/privacybydesign/postguard-business/commit/bfd80a1354ec91e0f8a2a96d423f1117f1ad71ea))
+
 ## [1.4.1](https://github.com/privacybydesign/postguard-business/compare/v1.4.0...v1.4.1) (2026-11-18)
 
 
